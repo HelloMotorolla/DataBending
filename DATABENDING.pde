@@ -1,24 +1,29 @@
-PImage img;  // Declare variable "a" of type PImage
+import processing.video.*;
+Capture cam;
 
 void setup() {
   size(800, 600);
-  img = loadImage("moxie_rounded.jpg"); // Replace with the image's file path
-  img.loadPixels();
+  cam = new Capture(this, 640, 480);
+  cam.start();
 }
 
 void draw() {
-  for (int i = 0; i < img.pixels.length; i++) {
-    color c = img.pixels[i];
-    float r = red(c);
-    float g = green(c);
-    float b = blue(c);
-
-    // Swap Red and Blue channels
-    img.pixels[i] = color(b, g, r);
+  if (cam.available()) {
+    cam.read();
+    cam.loadPixels();
+    
+    // Apply the color swapping effect
+    for (int i = 0; i < cam.pixels.length; i++) {
+      color c = cam.pixels[i];
+      float r = red(c);
+      float g = green(c);
+      float b = blue(c);
+      
+      // Swap Red and Blue channels
+      cam.pixels[i] = color(r, r, r);
+    }
+    
+    cam.updatePixels();
   }
-
-  img.updatePixels();
-  image(img, 0, 0, width, height);
+  image(cam, 0, 0, width, height);
 }
-
-
